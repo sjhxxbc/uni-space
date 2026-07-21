@@ -1,0 +1,49 @@
+---
+description: uni-space 项目约定（Vue3 + TS + uni-app）
+alwaysApply: true
+---
+
+# uni-space 开发约定
+
+## 技术栈
+
+- uni-app + Vue 3（`<script setup lang="ts">`）+ TypeScript + Vite
+- 样式优先用 Less：`<style lang="less" scoped>`
+- 状态管理需要时用 Pinia，不要引入 Vuex
+
+## 路由（重要）
+
+- **不要用 Vue Router**。页面路由由 `src/pages.json` 声明。
+- 跳转只用 uni API：
+
+```ts
+uni.navigateTo({ url: '/pages/foo/foo?id=1' })
+uni.redirectTo({ url: '/pages/login/login' })
+uni.switchTab({ url: '/pages/index/index' })
+uni.reLaunch({ url: '/pages/index/index' })
+uni.navigateBack()
+```
+
+- 新页面：先在 `src/pages/` 建目录与 `.vue`，再写入 `pages.json`。
+- 页面参数在 `onLoad` 里接收，不要假设有 `route` / `useRouter`。
+
+## 目录与代码风格
+
+- 页面：`src/pages/<name>/<name>.vue`
+- 组件：`src/components/`
+- 工具：`src/utils/`
+- 类型：`src/types/` 或与模块同目录的 `*.d.ts`
+- 静态资源：`src/static/`
+- 优先 Composition API；可复用逻辑抽到 `src/composables/`
+- 路径别名用 `@/`（指向 `src/`）
+
+## 平台注意
+
+- 优先用 uni 条件编译处理端差异：`#ifdef H5` / `MP-WEIXIN` 等
+- 不要直接依赖仅浏览器可用的 DOM/BOM API（除非包在 H5 条件编译内）
+- 网络请求封装统一走 `uni.request`（或后续统一的 request 封装），不要混用 `fetch`/`axios` 除非明确只做 H5
+
+## 改动原则
+
+- 业务方向未定时，只搭可复用骨架，不臆造完整业务功能
+- 保持改动小而聚焦；不擅自加与需求无关的依赖或文档
